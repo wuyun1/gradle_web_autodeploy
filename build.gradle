@@ -1,0 +1,59 @@
+// gradle插件
+  buildscript {
+      repositories {
+          jcenter { url "http://jcenter.bintray.com/" }
+      }
+      dependencies {
+          // 远程布署插件
+          classpath 'org.hidetake:gradle-ssh-plugin:1.0.1'
+          // web容器，支持jetty和tomcat
+          classpath 'org.akhikhl.gretty:gretty:+'
+      }
+  }
+
+// 全局配置，对所有工程有效
+allprojects {
+  apply plugin: "java"
+  apply plugin: "idea"
+  apply plugin: "eclipse"
+  apply plugin: "maven"
+
+  group = "com.test"
+  version = "1.0"
+
+  // 全局属性设置
+  ext {
+    junitVersion = "4.11"
+    springVersion = "3.0.5.RELEASE"
+    // java文件编码方式设置为utf-8
+    compileJava.options.encoding = 'UTF-8'
+    compileTestJava.options.encoding = 'UTF-8'
+  }
+}
+
+// 所有子工程共有的配置
+subprojects {
+  // 配置多个maven源
+  repositories {
+      mavenLocal()
+      mavenCentral()
+      maven { url "http://mirrors.ibiblio.org/pub/mirrors/maven2" }
+  }
+  // 默认情况下gradle会选用版本最高的那个依赖，有时候会带来问题
+  configurations.all {
+    // 有版本冲突的时候强制使用指定的版本，对于相关依赖也同样有效
+    resolutionStrategy.force(
+      "org.springframework:spring-core:${springVersion}", 
+    )
+  }
+  // 公共依赖配置
+  dependencies {
+      compile(
+        "org.springframework:spring-core:${springVersion}",
+      )
+      testCompile(
+        "junit:junit:${junitVersion}",
+      )
+  }
+}
+

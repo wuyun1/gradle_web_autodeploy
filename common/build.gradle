@@ -1,0 +1,16 @@
+// common工程配置
+project(':common'){
+  // 设置resource文件目录，引入java文件夹下的xml文件
+  sourceSets {
+    main {
+      resources.srcDirs = ['src/main/resources', 'src/main/java']
+      resources.includes = ['src/main/java/**.xml']
+    }
+  }
+  dependencies {
+    compile(
+      "org.mongodb:mongo-java-driver:2.10.1",
+      fileTree(dir: 'lib' , include: '*.jar' )
+    )
+  }
+}

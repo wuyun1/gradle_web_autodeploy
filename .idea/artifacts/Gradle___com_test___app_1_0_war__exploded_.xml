@@ -1,0 +1,31 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Gradle : com.test : app-1.0.war (exploded)">
+    <output-path>$PROJECT_DIR$/classes/artifacts/app/exploded/app-1.0.war</output-path>
+    <properties id="gradle-properties">
+      <options external-project-path="$PROJECT_DIR$" />
+    </properties>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="app_main/web/Web Gradle : app-1.0.war" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="app_main" />
+          <element id="dir-copy" path="$PROJECT_DIR$/app/build/resources/main" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Gradle: org.springframework:spring-core:3.0.5.RELEASE" />
+          <element id="archive" name="com.test-common-1.0.jar">
+            <element id="module-output" name="common_main" />
+            <element id="dir-copy" path="$PROJECT_DIR$/common/build/resources/main" />
+          </element>
+          <element id="library" level="project" name="Gradle: org.mongodb:mongo-java-driver:2.10.1" />
+          <element id="library" level="project" name="Gradle: org.springframework:spring-asm:3.0.5.RELEASE" />
+          <element id="library" level="project" name="Gradle: javax.servlet.jsp:jsp-api:2.1" />
+          <element id="file-copy" path="$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/classes/artifacts/app/exploded/app-1.0.war/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

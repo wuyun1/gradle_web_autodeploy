@@ -1,0 +1,95 @@
+// app工程配置
+project(':app'){
+  apply plugin: 'war'
+  apply from: 'gretty.plugin'
+  apply plugin: 'ssh'
+
+
+  // 使用gretty插件运行web工程
+  gretty {
+    httpPort = 8080
+    debugPort = httpPort + 1
+    servicePort = httpPort + 2
+    statusPort = httpPort + 3
+    httpsPort = httpPort + 4
+    httpsEnabled = true
+    contextPath = '/'
+    jvmArgs = ['-Xmx1024M', '-XX:PermSize=128M', '-XX:MaxPermSize=256M']
+    servletContainer = 'jetty7'
+    scanInterval = 0
+    inplaceMode = 'hard'
+    debugSuspend = false
+  }
+  // 自定义resource文件夹
+  sourceSets {
+    main {
+      resources.srcDirs = ['src/main/resources']
+    }
+  }
+  dependencies {
+    compile(
+      // 依赖common工程
+      project(":common"),
+      "javax.servlet.jsp:jsp-api:2.1",
+      "javax.servlet:servlet-api:2.5",
+    )
+  }
+  
+  // 如果是deploy到远程服务器，打包的时候替换域名
+  jar {
+      def replace = false
+      project.gradle.startParameter.taskNames.each{ command ->
+          if(command.contains('deploy')){
+              replace = true
+          }
+      }
+
+      if(replace){
+          filesMatching('**/*.properties') {
+              filter{
+                  // it变量是filter迭代器中的默认名称，这里代表每一行
+                  def result = it
+                  replaceUrl.each{ key,value ->
+                      if(it.contains(key)){
+                          result = result.replaceAll key, value
+                      }
+                  }
+                  result
+              }
+          }
+      }
+  }
+
+  ext {
+      // 远程服务器地址
+      tomcatPath = '/opt/tomcat'
+      // 远程服务器地址
+      remotes  {
+          server {
+              host = '115.28.242.47'
+              user = 'root'
+              password = 'wu950429..'
+          }
+      }
+
+      replaceUrl = [
+              'myapp:8080' : 'myapp:7654',
+              'mypartner:9090' : 'mypartner:7655',
+      ]
+  }
+  
+
+  // 布署至远程服务器，上传的war名为app.war
+  task deploy(dependsOn: war) << {
+      ssh.run {
+          session(remotes.server) {
+              put "$war.archivePath.path", "$tomcatPath/webapps/app.war"
+              execute "$tomcatPath/bin/shutdown.sh"
+              execute "rm -rf $tomcatPath/webapps/ROOT/*"
+              execute "unzip -oq $tomcatPath/webapps/app.war -d $tomcatPath/webapps/ROOT"
+              execute "rm -f $tomcatPath/webapps/app.war"
+              execute "$tomcatPath/bin/startup.sh"
+          }
+      }
+  }
+}

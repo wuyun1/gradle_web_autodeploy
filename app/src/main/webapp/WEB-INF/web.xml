@@ -1,0 +1,12 @@
+<web-app>
+  <display-name>gradle Test</display-name>
+
+  <servlet>
+    <servlet-name>aa</servlet-name>
+    <servlet-class>com.jonney.servlet.HelloServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>aa</servlet-name>
+    <url-pattern>/servlet/Hello</url-pattern>
+  </servlet-mapping>
+</web-app>
